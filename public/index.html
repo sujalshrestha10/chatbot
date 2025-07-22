@@ -15,13 +15,16 @@
         color: #222;
         display: flex;
         flex-direction: column;
-        height: 100vh;
+        /* Use 100dvh for dynamic viewport height if supported, fallback to 100vh */
+        height: 100dvh; 
+        height: 100vh; 
       }
       .container {
         flex: 1;
         display: flex;
         overflow: hidden;
-        height: 100vh;
+        /* Ensure container fills remaining space, but don't force 100vh */
+        /* height: 100vh; REMOVE THIS LINE */ 
       }
       #sidebar {
         width: 240px;
@@ -29,275 +32,239 @@
         border-right: 1px solid #e5e7eb;
         padding: 16px;
         overflow-y: auto;
+        /* Adjust for potential sticky header/footer if any */
+        height: calc(100vh - 50px); /* Adjust based on topBar height */
       }
       #chat {
         flex: 1;
         display: flex;
         flex-direction: column;
-        padding: 16px;
+        /* Remove padding here, add to messages/form instead if needed */
+        /* padding: 16px; */ 
+        position: relative; /* Needed for absolute positioning if used */
       }
       #roomTitle {
         font-size: 1.2rem;
         font-weight: 600;
       }
       #messages {
-        flex: 1;
+        flex: 1; /* Allow messages to take up available space */
         overflow-y: auto;
         padding: 12px;
         background: #fff;
         border: 1px solid #e5e7eb;
         border-radius: 8px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-        margin-bottom: 8px;
+        margin-bottom: 10px; /* Small margin above form */
+        /* Remove fixed margin for mobile, let flexbox handle it or adjust padding dynamically */
+      }
+      #form {
+        display: flex;
+        padding: 8px; /* Padding for the form itself */
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+      }
+      #form input {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        margin-right: 8px;
+      }
+      #form button {
+        background: #4f46e5;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      #form button:hover {
+        background: #4338ca;
       }
       .msg {
+        margin-bottom: 8px;
         display: flex;
-        margin-bottom: 10px;
+      }
+      .msg .bubble {
+        padding: 10px 15px;
+        border-radius: 18px;
+        max-width: 70%;
+        word-wrap: break-word;
       }
       .msg.me {
         justify-content: flex-end;
       }
+      .msg.me .bubble {
+        background-color: #e0f2fe;
+        color: #1e40af;
+        border-bottom-right-radius: 2px;
+      }
       .msg.other {
         justify-content: flex-start;
       }
-      .bubble {
-        padding: 10px 16px;
-        border-radius: 18px;
-        max-width: 70%;
-        word-break: break-word;
-        box-shadow: 0 1px 4px rgba(79, 70, 229, 0.06);
-      }
-      .msg.me .bubble {
-        background: #4f46e5;
-        color: #fff;
-        border-bottom-right-radius: 6px;
-      }
       .msg.other .bubble {
-        background: #f3f4f6;
-        color: #222;
-        border-bottom-left-radius: 6px;
-      }
-      .msg span {
-        font-weight: 600;
-      }
-      #form {
-        display: flex;
-        margin-top: 12px;
-        gap: 10px;
-      }
-      #input {
-        flex: 1;
-        padding: 12px;
-        font-size: 16px;
-        border: 1px solid #d1d5db;
-        border-radius: 6px;
-        background: #f3f4f6;
-      }
-      button {
-        padding: 12px 16px;
-        background: #4f46e5;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background 0.2s;
-      }
-      button:hover {
-        background: #4338ca;
+        background-color: #f0f0f0;
+        color: #333;
+        border-bottom-left-radius: 2px;
       }
       .user {
-        background: #f3f4f6;
         padding: 10px;
-        border-radius: 6px;
-        margin-bottom: 8px;
         cursor: pointer;
-        transition: background 0.2s;
-        position: relative;
-      }
-      .user:hover {
-        background: #e5e7eb;
-      }
-      .red-dot {
-        display: inline-block;
-        width: 10px;
-        height: 10px;
-        background: #e11d48;
-        border-radius: 50%;
-        margin-left: 6px;
-        vertical-align: middle;
-      }
-      #topBar {
-        width: 100vw;
-        background: #fff;
-        padding: 12px 16px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        border-bottom: 1px solid #eee;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        position: relative;
-        z-index: 20;
       }
-      #showUsersBtn {
-        display: none;
-        background: #4f46e5;
-        color: #fff;
-        border: none;
-        border-radius: 6px;
-        font-weight: 600;
-        padding: 8px 16px;
-        margin-right: 30px;
-        cursor: pointer;
-        font-size: 16px;
+      .user:hover {
+        background: #f0f0f0;
       }
-      @media (max-width: 768px) {
-        #showUsersBtn {
-          display: inline-block;
-        }
-        .container {
-          flex-direction: column;
-          height: 100vh;
-        }
-        #sidebar {
-          display: none;
-        }
-        #topBar {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          width: 100vw;
-          z-index: 20;
-        }
-        #chat {
-          padding-top: 56px; /* Height of topBar */
-        }
-        #form {
-          flex-direction: row;
-          gap: 8px;
-          position: fixed;
-          bottom: env(safe-area-inset-bottom, 0);
-          left: 0;
-          width: 100vw;
-          background: #fff;
-          padding: 8px 8px 12px 8px;
-          box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.04);
-          z-index: 10;
-        }
-        #messages {
-          margin-bottom: 90px; /* Space for input bar */
-        }
-        button {
-          width: auto;
-          min-width: 60px;
-        }
+      .red-dot {
+        width: 8px;
+        height: 8px;
+        background-color: #ef4444;
+        border-radius: 50%;
+        margin-left: 8px;
       }
-      @media (max-width: 480px) {
-        .user {
-          flex: 1 1 100%;
-          min-width: 0;
-        }
-        #input {
-          font-size: 16px;
-        }
-        #roomTitle {
-          font-size: 1rem;
-        }
-        #form {
-          padding: 6px 4px 10px 4px;
-        }
+      #topBar {
+        display: none; /* Hidden by default on desktop */
+        background: #fff;
+        padding: 10px 16px;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky; /* Make top bar sticky on mobile too */
+        top: 0;
+        z-index: 10;
       }
-      input[type="text"],
-      input[type="search"],
-      input[type="email"],
-      input[type="password"],
-      input[type="number"] {
-        font-size: 16px;
-      }
+
+      /* Modal styles */
       .modal {
+        display: none; /* Hidden by default */
         position: fixed;
         z-index: 1000;
         left: 0;
         top: 0;
-        width: 100vw;
-        height: 100vh;
-        background: rgba(79, 70, 229, 0.08);
-        display: flex;
-        align-items: center;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.6);
         justify-content: center;
+        align-items: center;
       }
       .modal-content {
-        background: #fff;
-        padding: 32px 24px;
-        border-radius: 14px;
-        box-shadow: 0 4px 24px rgba(79, 70, 229, 0.12);
-        min-width: 280px;
-        max-width: 92vw;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        width: 90%;
+        max-width: 400px;
+        text-align: center;
       }
       .modal-content input[type="text"],
       .modal-content input[type="number"] {
-        outline: none;
-        transition: border-color 0.2s;
-        border: 1px solid #d1d5db;
-        border-radius: 6px;
+        width: calc(100% - 22px);
         padding: 10px;
-        font-size: 16px;
-        margin-bottom: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
       }
-      .modal-content input:focus {
-        border-color: #4f46e5;
+      .modal-content .gender-options label {
+        margin-right: 20px;
+      }
+      .modal-content button {
+        background: #4f46e5;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1rem;
       }
       .modal-content button:hover {
         background: #4338ca;
       }
-      .gender-group {
-        display: flex;
-        justify-content: center;
-        gap: 24px;
-        margin-bottom: 10px;
-      }
-      .gender-group label {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        cursor: pointer;
-        font-size: 16px;
+
+      /* Mobile adjustments */
+      @media (max-width: 768px) {
+        #sidebar {
+          display: none; /* Hide sidebar on small screens */
+        }
+        #chat {
+          flex: 1; /* Chat takes full width */
+          padding: 0; /* Remove padding here, control within messages/form */
+        }
+        #topBar {
+          display: flex; /* Show top bar on mobile */
+          /* position: fixed; removed fixed, let it be part of flow or stick to top*/
+          width: 100%;
+          top: 0;
+          left: 0;
+          z-index: 10;
+          box-sizing: border-box;
+        }
+        .container {
+            flex-direction: column; /* Stack chat vertically */
+            height: auto; /* Allow height to adjust */
+            flex: 1; /* Take remaining space after topBar */
+        }
+        #messages {
+          flex: 1; /* Messages take up available space */
+          border-radius: 0; /* No border radius on mobile messages if full width */
+          margin-bottom: 0; /* No margin-bottom here either */
+          padding-bottom: 80px; /* Add padding to the bottom of messages to prevent content from being obscured by the fixed input form */
+          padding-top: 60px; /* Add padding to top for sticky header */
+          box-sizing: border-box; /* Include padding in height calculation */
+        }
+        #form {
+          position: fixed; /* Keep form fixed at bottom */
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          border-radius: 0;
+          z-index: 50;
+          box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+          box-sizing: border-box;
+          background: #fff; /* Ensure it covers content */
+        }
       }
     </style>
   </head>
   <body>
-    <!-- Modern Modal for Nickname, Age, Gender -->
-    <div id="userModal" class="modal">
-      <form id="userForm" class="modal-content">
-        <h2 style="margin-bottom: 18px; color: #4f46e5; text-align: center">
-          👤 Welcome! Set your profile
-        </h2>
-        <input type="text" id="nicknameInput" placeholder="Nickname" required />
-        <input
-          type="number"
-          id="ageInput"
-          placeholder="Age"
-          min="18"
-          max="99"
-          required
-        />
-        <div class="gender-group">
-          <label>
-            <input type="radio" name="gender" value="male" checked />
-            <span style="color: #3b82f6; font-weight: 600">♂ Male</span>
-          </label>
-          <label>
-            <input type="radio" name="gender" value="female" />
-            <span style="color: #e75480; font-weight: 600">♀ Female</span>
-          </label>
-        </div>
-        <button type="submit">Start Chatting 🚀</button>
-      </form>
+    <div id="userModal" class="modal" style="display: none">
+      <div class="modal-content">
+        <h3>Welcome! Please tell us about yourself.</h3>
+        <form id="userForm">
+          <input
+            type="text"
+            id="nicknameInput"
+            placeholder="Choose a Nickname"
+            required
+          />
+          <input
+            type="number"
+            id="ageInput"
+            placeholder="Your Age (18-99)"
+            min="18"
+            max="99"
+            required
+          />
+          <div class="gender-options" style="margin-bottom: 20px">
+            <label style="margin-right: 20px">
+              <input type="radio" name="gender" value="male" checked />
+              <span style="color: #3b82f6; font-weight: 600">♂ Male</span>
+            </label>
+            <label>
+              <input type="radio" name="gender" value="female" />
+              <span style="color: #e75480; font-weight: 600">♀ Female</span>
+            </label>
+          </div>
+          <button type="submit">Start Chatting 🚀</button>
+        </form>
+      </div>
     </div>
-    <!-- Modal for all online users (mobile) -->
     <div id="allUsersModal" class="modal" style="display: none">
       <div class="modal-content" style="max-height: 70vh; overflow-y: auto">
         <h3 style="margin-bottom: 12px; color: #4f46e5; text-align: center">
@@ -334,6 +301,7 @@
         </form>
       </div>
     </div>
+
     <script src="/socket.io/socket.io.js"></script>
     <script src="script.js"></script>
   </body>
